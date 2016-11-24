@@ -20,13 +20,25 @@ class ResPartner(models.Model):
                 name = partner[1]
                 partner_type = self.browse(id).type
 
-                # Handle all separately to get translations for Odoo
+                # Handle all separately to get translations for Odoo.
+                # Check the original name for line breaks so that when
+                # address_show parameter has been used, the address type
+                # gets shown on the first line
                 if partner_type == 'delivery':
-                    name = '{} ({})'.format(name, _('delivery'))
+                    if '\n' in name:
+                        name = name.replace('\n', ' ({})\n'.format(_('delivery')), 1)
+                    else:
+                        name = '{} ({})'.format(name, _('delivery'))
                 elif partner_type == 'invoice':
-                    name = '{} ({})'.format(name, _('invoice'))
+                    if '\n' in name:
+                        name = name.replace('\n', ' ({})\n'.format(_('invoice')), 1)
+                    else:
+                        name = '{} ({})'.format(name, _('invoice'))
                 elif partner_type == 'einvoice':
-                    name = '{} ({})'.format(name, _('einvoice'))
+                    if '\n' in name:
+                        name = name.replace('\n', ' ({})\n'.format(_('einvoice')), 1)
+                    else:
+                        name = '{} ({})'.format(name, _('einvoice'))
 
                 new_res.append((id, name))
 
